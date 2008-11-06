@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<createCustomerProfileResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <customerProfileId>10000</customerProfileId>
+</createCustomerProfileResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<createCustomerProfileResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Error</resultCode>
+    <message>
+      <code>E00044</code>
+      <text>Customer Information Manager is not enabled.</text>
+    </message>
+  </messages>
+</createCustomerProfileResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<ErrorResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Error</resultCode>
+    <message>
+      <code>E00003</code>
+      <text>The element 'createCustomerProfileRequest' in namespace 'AnetApi/xml/v1/schema/AnetApiSchema.xsd' has invali
+d child element 'refId' in namespace 'AnetApi/xml/v1/schema/AnetApiSchema.xsd'. List of possible elements expected: 'mer
+chantAuthentication' in namespace 'AnetApi/xml/v1/schema/AnetApiSchema.xsd'.</text>
+    </message>
+  </messages>
+</ErrorResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<createCustomerPaymentProfileResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <customerPaymentProfileId>20000</customerPaymentProfileId>
+  <validationDirectResponse>1,1,1,This transaction has been approved.,000000,Y,2000000000,none,Test transaction for ValidateCustomerPaymentProfile.,0.01,CC,auth_only,custId123,John,Doe,,123 Main St.,Bellevue,WA,98004,USA,000-000-0000,,mark@example.com,,,,,,,,,0.00,0.00,0.00,,none,D18EB6B211FE0BBF556B271FDA6F92EE,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,</validationDirectResponse>
+</createCustomerPaymentProfileResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<createCustomerShippingAddressResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <customerAddressId>30000</customerAddressId>
+</createCustomerShippingAddressResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<createCustomerProfileTransactionResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <directResponse>1,1,1,This transaction has been approved.,000000,Y,2000000001,INV000001,description of transaction,10.95,CC,auth_capture,custId123,John,Doe,,123 Main St.,Bellevue,WA,98004,USA,000-000-0000,,mark@example.com,John,Doe,,123 Main St.,Bellevue,WA,98004,USA,1.00,0.00,2.00,FALSE,PONUM000001,D18EB6B211FE0BBF556B271FDA6F92EE,M,2,,,,,,,,,,,,,,,,,,,,,,,,,,,,</directResponse>
+</createCustomerProfileTransactionResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<deleteCustomerProfileResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+</deleteCustomerProfileResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<deleteCustomerPaymentProfileResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+</deleteCustomerPaymentProfileResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<deleteCustomerShippingAddressResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+</deleteCustomerShippingAddressResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<getCustomerProfileResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <profile>
+    <merchantCustomerId>custId123</merchantCustomerId>
+    <description>some description</description>
+    <email>mark@example.com</email>
+    <customerProfileId>10000</customerProfileId>
+    <paymentProfiles>
+      <billTo>
+        <firstName>John</firstName>
+        <lastName>Doe</lastName>
+        <company></company>
+        <address>123 Main St.</address>
+        <city>Bellevue</city>
+        <state>WA</state>
+        <zip>98004</zip>
+        <country>USA</country>
+        <phoneNumber>000-000-0000</phoneNumber>
+        <faxNumber></faxNumber>
+      </billTo>
+      <customerPaymentProfileId>20000</customerPaymentProfileId>
+      <payment>
+        <creditCard>
+          <cardNumber>XXXX1111</cardNumber>
+          <expirationDate>XXXX</expirationDate>
+        </creditCard>
+      </payment>
+    </paymentProfiles>
+    <paymentProfiles>
+      <customerPaymentProfileId>20001</customerPaymentProfileId>
+      <payment>
+        <bankAccount>
+          <accountType>checking</accountType>
+          <routingNumber>XXXX0000</routingNumber>
+          <accountNumber>XXXX0000</accountNumber>
+          <nameOnAccount>John Doe</nameOnAccount>
+          <bankName>Bank of Washington</bankName>
+        </bankAccount>
+      </payment>
+    </paymentProfiles>
+    <shipToList>
+      <firstName>John</firstName>
+      <lastName>Doe</lastName>
+      <company></company>
+      <address>123 Main St.</address>
+      <city>Bellevue</city>
+      <state>WA</state>
+      <zip>98004</zip>
+      <country>USA</country>
+      <phoneNumber>000-000-0000</phoneNumber>
+      <faxNumber></faxNumber>
+    </shipToList>
+    <shipToList>
+      <firstName>Jane</firstName>
+      <lastName>Doe</lastName>
+      <address>123 Main St.</address>
+      <city>Bellevue</city>
+      <state>WA</state>
+      <zip>98004</zip>
+      <country>USA</country>
+      <phoneNumber>000-000-0000</phoneNumber>
+    </shipToList>
+  </profile>
+</getCustomerProfileResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<getCustomerPaymentProfileResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <paymentProfile>
+    <billTo>
+      <firstName>John</firstName>
+      <lastName>Doe</lastName>
+      <company></company>
+      <address>123 Main St.</address>
+      <city>Bellevue</city>
+      <state>WA</state>
+      <zip>98004</zip>
+      <country>USA</country>
+      <phoneNumber>000-000-0000</phoneNumber>
+      <faxNumber></faxNumber>
+    </billTo>
+    <customerPaymentProfileId>20000</customerPaymentProfileId>
+    <payment>
+      <creditCard>
+        <cardNumber>XXXX1111</cardNumber>
+        <expirationDate>XXXX</expirationDate>
+      </creditCard>
+    </payment>
+  </paymentProfile>
+</getCustomerPaymentProfileResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<getCustomerShippingAddressResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <address>
+    <firstName>John</firstName>
+    <lastName>Doe</lastName>
+    <company></company>
+    <address>123 Main St.</address>
+    <city>Bellevue</city>
+    <state>WA</state>
+    <zip>98004</zip>
+    <country>USA</country>
+    <phoneNumber>000-000-0000</phoneNumber>
+    <faxNumber></faxNumber>
+    <customerAddressId>30000</customerAddressId>
+  </address>
+</getCustomerShippingAddressResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<updateCustomerProfileResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+</updateCustomerProfileResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<updateCustomerPaymentProfileResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+</updateCustomerPaymentProfileResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<updateCustomerShippingAddressResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+</updateCustomerShippingAddressResponse>
+---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<validateCustomerPaymentProfileResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <directResponse>1,1,1,This transaction has been approved.,000000,Y,2000000003,none,Test transaction for ValidateCustomerPaymentProfile.,0.01,CC,auth_only,custId123,John,Doe,,123 Main St.,Bellevue,WA,98004,USA,000-000-0000,,mark@example.com,John,Doe,,123 Main St.,Bellevue,WA,98004,USA,0.00,0.00,0.00,,none,D18EB6B211FE0BBF556B271FDA6F92EE,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,</directResponse>
+</validateCustomerPaymentProfileResponse>
