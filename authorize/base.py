@@ -28,6 +28,7 @@ class BaseApi(object):
         self.key = key
         self.do_raise = do_raise
         self.async = async
+        self.headers = {'Content-Type': 'text/xml'}
 
     def request(self, body):
         """
@@ -37,8 +38,8 @@ class BaseApi(object):
         if self.async:
             return self.asyncrequest(body)
         conn = httplib.HTTPSConnection(self.server)
-        conn.request("POST", self.path, body, headers={'Content-Type': 'text/xml'})
-        return xml.to_dict(conn.getresponse().read(), self.responses, do_raise=self.do_raise)
+        conn.request("POST", self.path, body, headers=self.headers)
+        return self.parse_response(conn.getresponse().read())
 
     def asyncrequest(self, body):
         """
@@ -51,5 +52,12 @@ class BaseApi(object):
         return client.getPage("https://"+self.server+self.path,
                               method="POST",
                               postdata=body,
-                              headers={'Content-Type': 'text/xml'}
-            ).addCallback(xml.to_dict, self.responses, do_raise=self.do_raise)
+                              headers=self.headers
+            ).addCallback(self.parse_response)
+    
+    def parse_response(self, response):
+        """
+        Parse the response from the web service, check also if we want
+        to raise the error as opposed to return an error object.
+        """
+        return xml.to_dict(response, self.responses, self.do_raise)

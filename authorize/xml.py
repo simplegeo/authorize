@@ -22,6 +22,7 @@ ECHECK_WEB = u"WEB"
 
 BANK = u"bank"
 CREDIT_CARD = u"cc"
+ECHECK = u"echeck"
 
 DAYS_INTERVAL = u"days"
 MONTHS_INTERVAL = u"months"
@@ -37,6 +38,9 @@ ACCOUNT_BUSINESS_CHECKING = u"businessChecking"
 AUTH_ONLY = u"auth_only"
 CAPTURE_ONLY = u"capture_only"
 AUTH_CAPTURE = u"auth_capture"
+CREDIT = u"credit"
+PRIOR_AUTH_CAPTURE = u"prior_auth_capture"
+VOID = u"void"
 
 c = re.compile(r'([A-Z]+[a-z_]+)')
 
@@ -62,7 +66,7 @@ def convert(arg):
     if arg is False:
         return 'false'
     if isinstance(arg, float):
-        return unicode(round(arg, 4)) # floats have at most 4 decimals allowed
+        return unicode(round(arg, 2)) # there's nothing less than cents anyway
     if isinstance(arg, (int, long)):
         return unicode(arg)
     if isinstance(arg, str):
