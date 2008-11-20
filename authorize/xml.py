@@ -405,7 +405,7 @@ def profile(**kw):
             for prof in payment_profiles
         )
     else:
-        if kw.get('card_number'):
+        if kw.get('card_number') or kw.get("routing_number"):
             content = content + [paymentProfiles(**kw)]
     return x.profile(
         *(content + [shipToList(**kw)])

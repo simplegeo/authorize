@@ -164,11 +164,11 @@ class Api(base.BaseApi):
                 # these are the items that are bought here.
                 field_name = "x_line_item"
                 for item in value:
-                    argslist.append((field_name, "<|>".join(item)))
+                    argslist.append((field_name, "<|>".join(unicode(item))))
             else:
                 if field == "authentication_indicator" or \
                    field == "cardholder_authentication_value":
-                    value = urllib.quote(value)
+                    value = unicode(urllib.quote(str(value)))
                 field_name = "x_" + field
                 if isinstance(value, list):
                     value = u'<|>'.join(value)
