@@ -30,6 +30,7 @@ setup(
     name = "authorize",
     author = "Valentino Volonghi",
     author_email = "valentino@adroll.com",
+    url = "http://adroll.com/labs",
     description = description,
     long_description = long_description,
     license = "MIT License",
