@@ -22,7 +22,7 @@ setup = setuptools.setup
 find_packages = setuptools.find_packages
 
 description = """\
-An API to connect to authorize.net payment services."""
+An API to connect to authorize.net(TM) payment services."""
 
 long_description = file(os.path.join(os.path.dirname(__file__), 'README')).read()
 

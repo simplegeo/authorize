@@ -120,7 +120,11 @@ def parse_node(node):
     """
     new = dict_accessor({})
     if node.text and node.text.strip():
-       new['text_'] = node.text.decode('utf-8')
+        t = node.text
+        if isinstance(t, unicode):
+            new['text_'] = t
+        else:
+            new['text_'] = t.decode('utf-8')
     if node.attrib:
         new['attrib_'] = dict_accessor(node.attrib)
 
