@@ -87,7 +87,7 @@ def populate(map, from_):
         if code.startswith("I"):
             continue # it's useless to have successful response codes in this _errors_ map
         else:
-            cim_map[code] = AuthorizeError(code, text, description)
+            map[code] = AuthorizeError(code, text, description)
 
 populate(cim_map, _cim_response_codes)
 populate(arb_map, _arb_response_codes)
