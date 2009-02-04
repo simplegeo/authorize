@@ -16,7 +16,7 @@ except ImportError:
 import sys, os
 import authorize
 
-install_requires = ["lxml>=2.0.0"]
+install_requires = [] # ["lxml>=2.0.0"] still required to run tests though
 
 setup = setuptools.setup
 find_packages = setuptools.find_packages
