@@ -1,5 +1,5 @@
 from unittest import TestCase
-from authorize import xml as x, responses, cim, arb, aim
+from authorize import gen_xml as x, responses, cim, arb, aim
 
 class TestAPIUsage(TestCase):
     def test_aim_calls(self):

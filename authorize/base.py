@@ -1,6 +1,6 @@
 import httplib
 
-from authorize import xml
+from authorize import gen_xml as xml
 
 class BaseApi(object):
     """

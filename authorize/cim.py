@@ -1,9 +1,9 @@
-from authorize import xml, util, base, responses as resp
+from authorize import gen_xml as xml, util, base, responses as resp
 
-from authorize.xml import INDIVIDUAL, BUSINESS, ECHECK_CCD, ECHECK_PPD, ECHECK_TEL, ECHECK_WEB
-from authorize.xml import BANK, CREDIT_CARD, VALIDATION_NONE, CAPTURE_ONLY, AUTH_CAPTURE
-from authorize.xml import VALIDATION_TEST, VALIDATION_LIVE, ACCOUNT_CHECKING, ACCOUNT_SAVINGS
-from authorize.xml import ACCOUNT_BUSINESS_CHECKING, AUTH_ONLY
+from authorize.gen_xml import INDIVIDUAL, BUSINESS, ECHECK_CCD, ECHECK_PPD, ECHECK_TEL, ECHECK_WEB
+from authorize.gen_xml import BANK, CREDIT_CARD, VALIDATION_NONE, CAPTURE_ONLY, AUTH_CAPTURE
+from authorize.gen_xml import VALIDATION_TEST, VALIDATION_LIVE, ACCOUNT_CHECKING, ACCOUNT_SAVINGS
+from authorize.gen_xml import ACCOUNT_BUSINESS_CHECKING, AUTH_ONLY
 
 class Api(base.BaseApi):
     """

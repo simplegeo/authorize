@@ -2,9 +2,37 @@
 import re
 import decimal
 
-from lxml.etree import fromstring, tostring
-from lxml.html.builder import E
-from lxml.html import HtmlElement
+from xml.etree.cElementTree import fromstring, tostring as _tostring
+from xml.etree.cElementTree import Element, iselement as _iselement
+
+def tostring(tree, encoding="utf-8", pretty_print=None):
+    return _tostring(tree, encoding)
+
+class E(object):
+    def __getattr__(self, name):
+        el = Element(name)
+        def builder(*args):
+            settext = False
+            setatts = False
+            for arg in args:
+                if _iselement(arg):
+                    el.append(arg)
+                elif isinstance(arg, basestring):
+                    assert not settext, "cannot set text twice"
+                    el.text = arg
+                    settext = True
+                elif isinstance(arg, dict):
+                    assert not setatts, "cannot set attributes twice"
+                    for k, v in args[0].iteritems():
+                        el.set(k, v)
+                    setatts = True
+                else:
+                    raise TypeError("unhandled argument type: %s" % type(arg))
+            return el
+        return builder
+E = E()
+
+HtmlElement = type(Element("x"))
 
 from authorize import responses
 

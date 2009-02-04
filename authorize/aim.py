@@ -1,10 +1,10 @@
 import urllib
 
-from authorize import xml, util, base, responses as resp
+from authorize import gen_xml as xml, util, base, responses as resp
 
-from authorize.xml import CREDIT_CARD, ECHECK
-from authorize.xml import AUTH_CAPTURE, AUTH_ONLY, CAPTURE_ONLY
-from authorize.xml import CREDIT, PRIOR_AUTH_CAPTURE, VOID
+from authorize.gen_xml import CREDIT_CARD, ECHECK
+from authorize.gen_xml import AUTH_CAPTURE, AUTH_ONLY, CAPTURE_ONLY
+from authorize.gen_xml import CREDIT, PRIOR_AUTH_CAPTURE, VOID
 
 class Api(base.BaseApi):
     """
