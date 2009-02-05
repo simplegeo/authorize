@@ -7,8 +7,11 @@ j = os.path.join
 
 from schema import SCHEMA
 
-# To run the tests we still need lxml
-from lxml.etree import XMLSchema, XMLParser, fromstring
+try:
+    # To run the tests we still need lxml
+    from lxml.etree import XMLSchema, XMLParser, fromstring
+except ImportError:
+    raise Exception("lxml 2.0.3+ is needed to run authorize tests")
 
 from authorize import gen_xml as x, responses, cim, arb
 
