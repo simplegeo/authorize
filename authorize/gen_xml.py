@@ -2,37 +2,8 @@
 import re
 import decimal
 
-from xml.etree.cElementTree import fromstring, tostring as _tostring
-from xml.etree.cElementTree import Element, iselement as _iselement
-
-def tostring(tree, encoding="utf-8", pretty_print=None):
-    return _tostring(tree, encoding)
-
-class E(object):
-    def __getattr__(self, name):
-        el = Element(name)
-        def builder(*args):
-            settext = False
-            setatts = False
-            for arg in args:
-                if _iselement(arg):
-                    el.append(arg)
-                elif isinstance(arg, basestring):
-                    assert not settext, "cannot set text twice"
-                    el.text = arg
-                    settext = True
-                elif isinstance(arg, dict):
-                    assert not setatts, "cannot set attributes twice"
-                    for k, v in args[0].iteritems():
-                        el.set(k, v)
-                    setatts = True
-                else:
-                    raise TypeError("unhandled argument type: %s" % type(arg))
-            return el
-        return builder
-E = E()
-
-HtmlElement = type(Element("x"))
+from xml.etree.cElementTree import fromstring, tostring
+from xml.etree.cElementTree import Element, iselement
 
 from authorize import responses
 
@@ -76,7 +47,7 @@ def convert(arg):
     """
     Convert an object to its xml representation
     """
-    if isinstance(arg, HtmlElement):
+    if iselement(arg):
         return arg # the element
     if isinstance(arg, dict_accessor):
         try:
@@ -101,26 +72,44 @@ def convert(arg):
         raise Exception("Can only accept unicode strings")
     raise Exception("Cannot convert %s of type %s" % (arg, type(arg)))
 
-class UsefulWrapper(object):
+class XMLBuilder(object):
     """
-    UsefulWrapper tries to be slightly clever in order to be easier for
+    XMLBuilder tries to be slightly clever in order to be easier for
     the programmer. If you try to add arguments that are None they
     won't be added to the output because empty XML tags are not worth
     the bandwidth and actually mean something different than None.
     """
     def __getattr__(self, key):
         def _wrapper_func(*args):
-            if all(arg is None for arg in args):
+            converted = [convert(arg) for arg in args if arg is not None]
+            if not converted:
                 return None
-            return getattr(E, key)(*[convert(arg) for arg in args if arg is not None])
+            el = Element(key)
+            settext = False
+            setatts = False
+            for arg in converted:
+                if iselement(arg):
+                    el.append(arg)
+                elif isinstance(arg, basestring):
+                    assert not settext, "cannot set text twice"
+                    el.text = arg
+                    settext = True
+                elif isinstance(arg, dict):
+                    assert not setatts, "cannot set attributes twice"
+                    for k, v in arg.iteritems():
+                        el.set(k, v)
+                    setatts = True
+                else:
+                    raise TypeError("unhandled argument type: %s" % type(arg))
+            return el
         return _wrapper_func
-x = UsefulWrapper()
+x = XMLBuilder()
 
 def flatten(tree):
     """
     Return a flattened tree in string format encoded in utf-8
     """
-    return tostring(tree, pretty_print=True, encoding="utf-8")
+    return tostring(tree, "utf-8")
 
 def purify(s):
     """
