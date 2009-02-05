@@ -69,7 +69,7 @@ def convert(arg):
     if isinstance(arg, (int, long)):
         return unicode(arg)
     if isinstance(arg, str):
-        raise Exception("Can only accept unicode strings")
+        raise Exception("'%s' not unicode: can only accept unicode strings" % (arg,))
     raise Exception("Cannot convert %s of type %s" % (arg, type(arg)))
 
 class XMLBuilder(object):
