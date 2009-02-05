@@ -27,7 +27,12 @@ class TestXML(TestCase):
 
     def setUp(self):
         self.cim_old = cim.Api.request
-        cim.Api.request = lambda self, body: assertValid(body)
+        def validateRequest(self, body):
+            assertValid(body)
+            assert_other = getattr(self, "assert_other", None)
+            if assert_other is not None:
+                assert_other(body)
+        cim.Api.request = validateRequest
         self.cim = cim.Api(u'foo', u'bar', is_test=True)
         
         self.arb_old = arb.Api.request
@@ -82,18 +87,20 @@ class TestXML(TestCase):
             customer_id=u"dialtone"
         )
 
-        message = x.cim_create_profile(
-            u'foo',
-            u"bar",
-            customer_id=u"dialtone",
-            profile_type=u"bank",
-            name_on_account=u"John Doe",
-            routing_number=u"12345678",
-            account_number=u"1234567890"
-        )
-        assertValid(message)
-        assert 'creditCardNumber' not in message
-        assert 'bankAccount' in message
+        def assert_other(message):
+            assert 'creditCardNumber' not in message
+            assert 'bankAccount' in message
+        self.assert_other = assert_other
+        try:
+            self.cim.create_profile(
+                customer_id=u"dialtone",
+                profile_type=u"bank",
+                name_on_account=u"John Doe",
+                routing_number=u"12345678",
+                account_number=u"1234567890"
+            )
+        finally:
+            del self.assert_other
     
         self.cim.create_profile(
             card_number=u"42222222222",
@@ -112,19 +119,20 @@ class TestXML(TestCase):
                  account_number=u"1234567890")
         ]
         
-        message = x.cim_create_profile(
-            u'foo',
-            u"bar",
-            customer_id=u"dialtone",
-            payment_profiles=payment_profiles,
-            ship_phone=u"415-415-4154",
-            ship_first_name=u"valentino"
-        )
-        
-        assertValid(message)
-        assert 'John Doe' in message
-        assert '43333333333' in message
-        assert 'valentino' in message
+        def assert_other(message):
+            assert 'John Doe' in message
+            assert '43333333333' in message
+            assert 'valentino' in message
+        self.assert_other = assert_other
+        try:
+            self.cim.create_profile(
+                customer_id=u"dialtone",
+                payment_profiles=payment_profiles,
+                ship_phone=u"415-415-4154",
+                ship_first_name=u"valentino"
+            )
+        finally:
+            del self.assert_other
 
     def test_create_payment_profile(self):
         """

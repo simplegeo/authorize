@@ -1,4 +1,6 @@
 from authorize import gen_xml as xml, util, base, responses as resp
+from authorize.gen_xml import x
+from authorize.util import request
 
 from authorize.gen_xml import INDIVIDUAL, BUSINESS, ECHECK_CCD, ECHECK_PPD, ECHECK_TEL, ECHECK_WEB
 from authorize.gen_xml import BANK, CREDIT_CARD, VALIDATION_NONE, CAPTURE_ONLY, AUTH_CAPTURE
@@ -9,178 +11,9 @@ class Api(base.BaseApi):
     """
     Main CIM api object.
     
-    It implements the following api calls:
-    
     NOTE: Arguments should be passed in as named arguments. Always.
     
-        create_profile: create a user's profile
-            arguments:
-                REQUIRED:
-                    customer_id: L{unicode}
-
-                OPTIONAL or CONDITIONAL:
-                    payment_profiles: L{list} containing L{dict}:
-                        REQUIRED:
-                            profile_type: L{CREDIT_CARD} (default) or L{BANK}
-                            card_number: L{unicode} or L{int}, required with CREDIT_CARD
-                            expiration_date: YYYY-MM, required with CREDIT_CARD
-                            routing_number: 9 digits, required with BANK
-                            account_number: 5 to 17 digits, required with BANK
-                            name_on_account: required with BANK
-                            
-                        OPTIONAL:
-                            customer_type: L{INDIVIDUAL} or L{BUSINESS}
-                            bill_first_name:
-                            bill_last_name: 
-                            bill_company: 
-                            bill_address: 
-                            bill_city: 
-                            bill_state: 
-                            bill_zip: 
-                            bill_country:
-                            bill_phone:
-                            bill_fax:
-                        all the above arguments can simply be passed
-                        as method arguments if you need to create just
-                        a single payment profile.
-
-                    description:
-                    email:                    
-                    account_type: L{ACCOUNT_CHECKING} or L{ACCOUNT_SAVINGS}
-                            or L{ACCOUNT_BUSINESS_CHECKING}, only with BANK
-                    bank_name:
-                    ship_first_name:
-                    ship_last_name:
-                    ship_company:
-                    ship_address:
-                    ship_city:
-                    ship_state:
-                    ship_zip:
-                    ship_country:
-                    ship_phone:
-                    ship_fax:
-        
-        create_payment_profile: add to a user's profile a new payment profile
-            arguments:
-                REQUIRED:
-                    customer_profile_id: L{unicode} or L{int}
-                    all the arguments for payment_profiles (above) should
-                        be provided as arguments to this method call
-                    validation_mode: L{VALIDATION_TEST}, L{VALIDATION_LIVE}, L{VALIDATION_NONE},
-                        the different level of validation will try to run and immediately
-                        void 0.01 transactions on live or test environment, L{VALIDATION_NONE}
-                        will skip this test. By default it's L{VALIDATION_NONE}
-
-        create_shipping_address: add to a user's profile a new shipping address
-            arguments:
-                REQUIRED:
-                    customer_profile_id: L{unicode} or L{int}
-                    all the arguments above starting with 'ship_' can be
-                        provided here with the same name.
-
-        create_profile_transaction: create a new transaction in the user's profile
-            NOTE: The response doesn't conform exactly to the XML output given
-            in the authorize.net documentation. The direct response has been
-            translated into a dictionary. The list of keys is in the source.
-            arguments:
-                REQUIRED:
-                    amount: L{float} or L{decimal.Decimal}
-                    customer_profile_id: L{unicode} or L{int}
-                    customer_payment_profile_id: L{unicode} or L{int}
-                    profile_type: L{AUTH_ONLY}, L{CAPTURE_ONLY}, L{AUTH_CAPTURE} (default AUTH_ONLY)
-                    approval_code: L{unicode}, 6 chars authorization code of an original transaction (only for CAPTURE_ONLY)
-                
-                OPTIONAL:
-                    tax_amount:
-                    tax_name:
-                    tax_descr:
-                    ship_amount:
-                    ship_name:
-                    ship_description:
-                    duty_amount:
-                    duty_name:
-                    duty_description:
-                    line_items:
-                        list of dictionaries with the following arguments:
-                            item_id: required
-                            name: required
-                            description: required
-                            quantity: required
-                            unit_price: required
-                            taxable:
-                    customer_address_id:
-                    invoice_number:
-                    description:
-                    purchase_order_number:
-                    tax_exempt: L{bool}, default False
-                    recurring: L{bool}, default False
-                    ccv:
-
-
-        delete_profile: delete one's profile
-            arguments:
-                customer_profile_id: required
-
-        delete_payment_profile: delete one of user's payment profiles
-            arguments:
-                customer_profile_id: required
-                customer_payment_profile_id: required
-                
-        delete_shipping_address: delete one of user's shipping addresses
-            arguments:
-                customer_profile_id: required
-                customer_address_id: required
-
-
-        get_profile: get a user's profile
-            arguments:
-                customer_profile_id: required
-                
-        get_payment_profile: get a user's payment profile
-            arguments:
-                customer_profile_id: required
-                customer_payment_profile_id: required
-                
-        get_shipping_address: get a user's shipping address
-            arguments:
-                customer_profile_id: required
-                customer_address_id: required
-
-        update_profile: update basic user's information
-            arguments:
-                customer_id: optional
-                description: optional
-                email: optional
-                customer_profile_id: required
-        
-        update_payment_profile: update user's payment profile
-            arguments:
-                customer_profile_id: required
-                
-                and the same arguments for payment_profiles with the
-                addition of an extra argument called
-                customer_payment_profile_id added for each payment_profile
-                that you intend to change.
-                
-                
-        update_shipping_address: update user's shipping address
-            arguments:
-                customer_profile_id: required
-                
-                and the same arguments for shipping_address with the
-                addition of an extra argument called
-                customer_address_id added for each shipping_address that
-                you intend to change.
-
-        validate_payment_profile: validate a user's payment profile
-            arguments:
-                customer_profile_id: required
-                customer_payment_profile_id: required
-                customer_address_id: required
-                validation_mode: L{VALIDATION_TEST} or L{VALIDATION_LIVE} or L{VALIDATION_NONE}, default L{VALIDATION_NONE}
-                
-    
-    Each of them will return a response dictionary that can vary from:
+    Each api call will return a response dictionary that can vary from:
     
     {'messages': {'message': {'code': {'text_': u'I00001'},
                               'text': {'text_': u'Successful.'}},
@@ -230,4 +63,277 @@ class Api(base.BaseApi):
     """
     responses = resp.cim_map
 
-util.populate(Api, xml, 'cim_')
+    @request
+    def create_profile(**kw):
+        """create a user's profile
+
+        arguments:
+            REQUIRED:
+                customer_id: L{unicode}
+
+            OPTIONAL or CONDITIONAL:
+                payment_profiles: L{list} containing L{dict}:
+                    REQUIRED:
+                        profile_type: L{CREDIT_CARD} (default) or L{BANK}
+                        card_number: L{unicode} or L{int}, required with CREDIT_CARD
+                        expiration_date: YYYY-MM, required with CREDIT_CARD
+                        routing_number: 9 digits, required with BANK
+                        account_number: 5 to 17 digits, required with BANK
+                        name_on_account: required with BANK
+                        
+                    OPTIONAL:
+                        customer_type: L{INDIVIDUAL} or L{BUSINESS}
+                        bill_first_name:
+                        bill_last_name: 
+                        bill_company: 
+                        bill_address: 
+                        bill_city: 
+                        bill_state: 
+                        bill_zip: 
+                        bill_country:
+                        bill_phone:
+                        bill_fax:
+                    all the above arguments can simply be passed
+                    as method arguments if you need to create just
+                    a single payment profile.
+
+                description:
+                email:                    
+                account_type: L{ACCOUNT_CHECKING} or L{ACCOUNT_SAVINGS}
+                        or L{ACCOUNT_BUSINESS_CHECKING}, only with BANK
+                bank_name:
+                ship_first_name:
+                ship_last_name:
+                ship_company:
+                ship_address:
+                ship_city:
+                ship_state:
+                ship_zip:
+                ship_country:
+                ship_phone:
+                ship_fax:
+        """
+        return 'createCustomerProfileRequest', kw, xml.profile(**kw)
+    
+    @request
+    def create_payment_profile(**kw):
+        """add to a user's profile a new payment profile
+
+        arguments:
+            REQUIRED:
+                customer_profile_id: L{unicode} or L{int}
+                all the arguments for payment_profiles (above) should
+                    be provided as arguments to this method call
+                validation_mode: L{VALIDATION_TEST}, L{VALIDATION_LIVE}, L{VALIDATION_NONE},
+                    the different level of validation will try to run and immediately
+                    void 0.01 transactions on live or test environment, L{VALIDATION_NONE}
+                    will skip this test. By default it's L{VALIDATION_NONE}
+        """
+        return ('createCustomerPaymentProfileRequest', kw,
+            x.customerProfileId(kw['customer_profile_id']),
+            xml.paymentProfile(**kw),
+            x.validationMode(kw.get('validation_mode', VALIDATION_NONE)) # none, testMode, liveMode
+        )
+    
+    @request
+    def create_shipping_address(**kw):
+        """add to a user's profile a new shipping address
+
+        arguments:
+            REQUIRED:
+                customer_profile_id: L{unicode} or L{int}
+                all the arguments above starting with 'ship_' can be
+                    provided here with the same name.
+        """
+        return ('createCustomerShippingAddressRequest', kw,
+            x.customerProfileId(kw['customer_profile_id']),
+            xml.address_2('ship_', **kw)
+        )
+    
+    @request
+    def create_profile_transaction(**kw):
+        """create a new transaction in the user's profile
+
+        NOTE: The response doesn't conform exactly to the XML output given
+        in the authorize.net documentation. The direct response has been
+        translated into a dictionary. The list of keys is in the source.
+
+        arguments:
+            REQUIRED:
+                amount: L{float} or L{decimal.Decimal}
+                customer_profile_id: L{unicode} or L{int}
+                customer_payment_profile_id: L{unicode} or L{int}
+                profile_type: L{AUTH_ONLY}, L{CAPTURE_ONLY}, L{AUTH_CAPTURE} (default AUTH_ONLY)
+                approval_code: L{unicode}, 6 chars authorization code of an original transaction (only for CAPTURE_ONLY)
+            
+            OPTIONAL:
+                tax_amount:
+                tax_name:
+                tax_descr:
+                ship_amount:
+                ship_name:
+                ship_description:
+                duty_amount:
+                duty_name:
+                duty_description:
+                line_items:
+                    list of dictionaries with the following arguments:
+                        item_id: required
+                        name: required
+                        description: required
+                        quantity: required
+                        unit_price: required
+                        taxable:
+                customer_address_id:
+                invoice_number:
+                description:
+                purchase_order_number:
+                tax_exempt: L{bool}, default False
+                recurring: L{bool}, default False
+                ccv:
+        """
+        return 'createCustomerProfileTransactionRequest', kw, xml.transaction(**kw)
+    
+    @request
+    def delete_profile(**kw):
+        """delete one's profile
+
+        arguments:
+            customer_profile_id: required
+        """
+        return ('deleteCustomerProfileRequest', kw,
+            x.customerProfileId(kw['customer_profile_id'])
+        )
+    
+    @request
+    def delete_payment_profile(**kw):
+        """delete one of user's payment profiles
+        
+        arguments:
+            customer_profile_id: required
+            customer_payment_profile_id: required
+        """
+        return ('deleteCustomerPaymentProfileRequest', kw,
+            x.customerProfileId(kw['customer_profile_id']),
+            x.customerPaymentProfileId(kw['customer_payment_profile_id'])
+        )
+    
+    @request
+    def delete_shipping_address(**kw):
+        """delete one of user's shipping addresses
+        
+        arguments:
+            customer_profile_id: required
+            customer_address_id: required
+        """
+        return ('deleteCustomerShippingAddressRequest', kw,
+            x.customerProfileId(kw['customer_profile_id']),
+            x.customerAddressId(kw['customer_address_id'])
+        )
+    
+    @request
+    def get_profile(**kw):
+        """get a user's profile
+        
+        arguments:
+            customer_profile_id: required
+        """
+        return ('getCustomerProfileRequest', kw,
+            x.customerProfileId(kw['customer_profile_id'])
+        )
+    
+    @request
+    def get_payment_profile(**kw):
+        """get a user's payment profile
+        
+        arguments:
+            customer_profile_id: required
+            customer_payment_profile_id: required
+        """
+        return ('getCustomerPaymentProfileRequest', kw,
+            x.customerProfileId(kw['customer_profile_id']),
+            x.customerPaymentProfileId(kw['customer_payment_profile_id'])
+        )
+    
+    @request
+    def get_shipping_address(**kw):
+        """get a user's shipping address
+        
+        arguments:
+            customer_profile_id: required
+            customer_address_id: required
+        """
+        return ('getCustomerShippingAddressRequest', kw,
+            x.customerProfileId(kw['customer_profile_id']),
+            x.customerAddressId(kw['customer_address_id'])
+        )
+    
+    @request
+    def update_profile(**kw):
+        """update basic user's information
+        
+        arguments:
+            customer_id: optional
+            description: optional
+            email: optional
+            customer_profile_id: required
+        """
+        return ('updateCustomerProfileRequest', kw,
+            x.profile(
+                x.merchantCustomerId(kw.get('customer_id')),
+                x.description(kw.get('description')),
+                x.email(kw.get('email')),
+                x.customerProfileId(kw['customer_profile_id'])
+            )
+        )
+    
+    @request
+    def update_payment_profile(**kw):
+        """update user's payment profile
+        
+        arguments:
+            customer_profile_id: required
+            
+            and the same arguments for payment_profiles with the
+            addition of an extra argument called
+            customer_payment_profile_id added for each payment_profile
+            that you intend to change.
+        """
+        return ('updateCustomerPaymentProfileRequest', kw,
+            x.customerProfileId(kw['customer_profile_id']),
+            xml.update_paymentProfile(**kw)
+        )
+    
+    @request
+    def update_shipping_address(**kw):
+        """update user's shipping address
+        
+        arguments:
+            customer_profile_id: required
+            
+            and the same arguments for shipping_address with the
+            addition of an extra argument called
+            customer_address_id added for each shipping_address that
+            you intend to change.
+        """
+        return ('updateCustomerShippingAddressRequest', kw,
+            x.customerProfileId(kw['customer_profile_id']),
+            xml.update_address(**kw)
+        )
+    
+    @request
+    def validate_payment_profile(**kw):
+        """validate a user's payment profile
+        
+        arguments:
+            customer_profile_id: required
+            customer_payment_profile_id: required
+            customer_address_id: required
+            validation_mode: L{VALIDATION_TEST} or L{VALIDATION_LIVE} or L{VALIDATION_NONE}, default L{VALIDATION_NONE}
+        """
+        return ('validateCustomerPaymentProfileRequest', kw,
+            x.customerProfileId(kw['customer_profile_id']),
+            x.customerPaymentProfileId(kw['customer_payment_profile_id']),
+            x.customerShippingAddressId(kw['customer_address_id']),
+            x.validationMode(kw.get('validation_mode', VALIDATION_NONE))
+        )
