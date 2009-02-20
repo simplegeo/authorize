@@ -141,7 +141,7 @@ def parse_node(node):
         if isinstance(t, unicode):
             new['text_'] = t
         else:
-            new['text_'] = t.decode('utf-8')
+            new['text_'] = t.decode('utf-8', "replace")
     if node.attrib:
         new['attrib_'] = dict_accessor(node.attrib)
 
@@ -217,9 +217,12 @@ def parse_direct_response(s):
         holder_verification:
             see L{responses.holder_verification_codes} for all the codes
     """
-    v = s.decode('utf-8').split(u',')
+    if not isinstance(s, unicode):
+        s = s.decode('utf-8', 'replace')
+        
+    v = s.split(u',')
     if not len(v) >= len(m):
-        v = s.decode('utf-8').split(u'|')
+        v = s.split(u'|')
 
     d = dict_accessor(dict(zip(m, v)))
     d.original = s
