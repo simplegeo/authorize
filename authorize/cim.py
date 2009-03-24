@@ -10,15 +10,15 @@ from authorize.gen_xml import ACCOUNT_BUSINESS_CHECKING, AUTH_ONLY
 class Api(base.BaseApi):
     """
     Main CIM api object.
-    
+
     NOTE: Arguments should be passed in as named arguments. Always.
-    
+
     Each api call will return a response dictionary that can vary from:
-    
+
     {'messages': {'message': {'code': {'text_': u'I00001'},
                               'text': {'text_': u'Successful.'}},
                   'result_code': {'text_': u'Ok'}}}
-    
+
     to:
 
     {'messages': {'message': {'code': {'text_': u'I00001'},
@@ -32,32 +32,32 @@ class Api(base.BaseApi):
 
     with all the possible variations and arguments depending on the
     format specified by Authorize.net at:
-    
+
         http://www.authorize.net/support/CIM_XML_guide.pdf
-    
+
     a field in the response can be accesses by using either dictionary
     access methods:
-        
+
         response['messages']['message']['code']['text_']
-    
+
     or object dot-notation:
-    
+
         response.messages.message.code.text_
-    
+
     There are 2 custom key names in the responses:
         attrib_: a dictionary of the attributes of a tag
         text_: the text contained in the tag
-    
+
     In order to read the corresponding value one has to manually
     access to the special attribute. Sometimes though one just wants
     to pass a dict_accessor to an authorize API call without having to
     worry about the text_ key (and only the text key), in this case
     the XML flattener is smart enough to recognize that you passed
     a dict_accessor with a text_ attribute and will use it for you.
-        
+
         profile = cim.get_customer_profile()
         cim.some_api_call(profile.customer_profile_id)
-    
+
     In the example customer_profile_id would be {'text_': u'12334'} but
     the api_call will extract the text_ content for you.
     """
@@ -80,7 +80,7 @@ class Api(base.BaseApi):
                         routing_number: 9 digits, required with BANK
                         account_number: 5 to 17 digits, required with BANK
                         name_on_account: required with BANK
-                        
+
                     OPTIONAL:
                         customer_type: L{INDIVIDUAL} or L{BUSINESS}
                         bill_first_name:
@@ -114,7 +114,7 @@ class Api(base.BaseApi):
                 ship_fax:
         """
         return 'createCustomerProfileRequest', kw, xml.profile(**kw)
-    
+
     @request
     def create_payment_profile(**kw):
         """add to a user's profile a new payment profile
@@ -134,7 +134,7 @@ class Api(base.BaseApi):
             xml.paymentProfile(**kw),
             x.validationMode(kw.get('validation_mode', VALIDATION_NONE)) # none, testMode, liveMode
         )
-    
+
     @request
     def create_shipping_address(**kw):
         """add to a user's profile a new shipping address
@@ -149,7 +149,7 @@ class Api(base.BaseApi):
             x.customerProfileId(kw['customer_profile_id']),
             xml.address_2('ship_', **kw)
         )
-    
+
     @request
     def create_profile_transaction(**kw):
         """create a new transaction in the user's profile
@@ -165,7 +165,7 @@ class Api(base.BaseApi):
                 customer_payment_profile_id: L{unicode} or L{int}
                 profile_type: L{AUTH_ONLY}, L{CAPTURE_ONLY}, L{AUTH_CAPTURE} (default AUTH_ONLY)
                 approval_code: L{unicode}, 6 chars authorization code of an original transaction (only for CAPTURE_ONLY)
-            
+
             OPTIONAL:
                 tax_amount:
                 tax_name:
@@ -193,7 +193,7 @@ class Api(base.BaseApi):
                 ccv:
         """
         return 'createCustomerProfileTransactionRequest', kw, xml.transaction(**kw)
-    
+
     @request
     def delete_profile(**kw):
         """delete one's profile
@@ -204,11 +204,11 @@ class Api(base.BaseApi):
         return ('deleteCustomerProfileRequest', kw,
             x.customerProfileId(kw['customer_profile_id'])
         )
-    
+
     @request
     def delete_payment_profile(**kw):
         """delete one of user's payment profiles
-        
+
         arguments:
             customer_profile_id: required
             customer_payment_profile_id: required
@@ -217,11 +217,11 @@ class Api(base.BaseApi):
             x.customerProfileId(kw['customer_profile_id']),
             x.customerPaymentProfileId(kw['customer_payment_profile_id'])
         )
-    
+
     @request
     def delete_shipping_address(**kw):
         """delete one of user's shipping addresses
-        
+
         arguments:
             customer_profile_id: required
             customer_address_id: required
@@ -230,22 +230,31 @@ class Api(base.BaseApi):
             x.customerProfileId(kw['customer_profile_id']),
             x.customerAddressId(kw['customer_address_id'])
         )
-    
+
+    @request
+    def get_profile_ids(**kw):
+        """get all users' profiles ids
+
+        arguments:
+            Nothing
+        """
+        return ('getCustomerProfileIdsRequest', kw)
+
     @request
     def get_profile(**kw):
         """get a user's profile
-        
+
         arguments:
             customer_profile_id: required
         """
         return ('getCustomerProfileRequest', kw,
             x.customerProfileId(kw['customer_profile_id'])
         )
-    
+
     @request
     def get_payment_profile(**kw):
         """get a user's payment profile
-        
+
         arguments:
             customer_profile_id: required
             customer_payment_profile_id: required
@@ -254,11 +263,11 @@ class Api(base.BaseApi):
             x.customerProfileId(kw['customer_profile_id']),
             x.customerPaymentProfileId(kw['customer_payment_profile_id'])
         )
-    
+
     @request
     def get_shipping_address(**kw):
         """get a user's shipping address
-        
+
         arguments:
             customer_profile_id: required
             customer_address_id: required
@@ -267,11 +276,11 @@ class Api(base.BaseApi):
             x.customerProfileId(kw['customer_profile_id']),
             x.customerAddressId(kw['customer_address_id'])
         )
-    
+
     @request
     def update_profile(**kw):
         """update basic user's information
-        
+
         arguments:
             customer_id: optional
             description: optional
@@ -286,14 +295,14 @@ class Api(base.BaseApi):
                 x.customerProfileId(kw['customer_profile_id'])
             )
         )
-    
+
     @request
     def update_payment_profile(**kw):
         """update user's payment profile
-        
+
         arguments:
             customer_profile_id: required
-            
+
             and the same arguments for payment_profiles with the
             addition of an extra argument called
             customer_payment_profile_id added for each payment_profile
@@ -303,14 +312,14 @@ class Api(base.BaseApi):
             x.customerProfileId(kw['customer_profile_id']),
             xml.update_paymentProfile(**kw)
         )
-    
+
     @request
     def update_shipping_address(**kw):
         """update user's shipping address
-        
+
         arguments:
             customer_profile_id: required
-            
+
             and the same arguments for shipping_address with the
             addition of an extra argument called
             customer_address_id added for each shipping_address that
@@ -320,11 +329,11 @@ class Api(base.BaseApi):
             x.customerProfileId(kw['customer_profile_id']),
             xml.update_address(**kw)
         )
-    
+
     @request
     def validate_payment_profile(**kw):
         """validate a user's payment profile
-        
+
         arguments:
             customer_profile_id: required
             customer_payment_profile_id: required
