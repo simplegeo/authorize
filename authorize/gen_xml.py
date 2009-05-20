@@ -72,6 +72,15 @@ def convert(arg):
         raise Exception("'%s' not unicode: can only accept unicode strings" % (arg,))
     raise Exception("Cannot convert %s of type %s" % (arg, type(arg)))
 
+def utf8convert(arg):
+    """
+    Further extend L{convert} to return UTF-8 strings instead of unicode.
+    """
+    value = convert(arg)
+    if isinstance(value, unicode):
+        return value.encode('utf-8')
+    return value
+
 class XMLBuilder(object):
     """
     XMLBuilder tries to be slightly clever in order to be easier for

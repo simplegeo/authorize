@@ -13,16 +13,16 @@ class Api(base.BaseApi):
     you can pass all of these in the transaction method as keyword
     arguments without adding 'x_' at the beginning of the name. For
     example:
-    
+
         result_dict = aim.transaction(
             amount=10.00,
             card_num=u"4111111111111111",
             exp_date=u"2009-07"
         )
-    
+
     Every string argument must be unicode.
-    
-    
+
+
     Minimum required arguments for a transaction:
         x_login: up to 20 chars
         x_tran_key: 16 chars
@@ -33,14 +33,14 @@ class Api(base.BaseApi):
         x_trans_id: only required for CREDIT, PRIOR_AUTH_CAPTURE, VOID
         x_auth_code: authorization code of an original transaction not authorized on the payment gateway,
                         6 chars only for CAPTURE_ONLY
-    
+
     Protocol related required arguments, you MUST NOT pass these:
         x_version: 3.1
         x_delim_char: char delimitator for the response
         x_delim_data: TRUE (return a transaction response)
         x_encap_char: boh
         x_relay_response: FALSE
-    
+
     Optional arguments or conditional arguments (arguments required only in certain cases):
         x_method: CC (default), ECHECK
         x_recurring_billing: TRUE, FALSE, T, F, YES, NO, Y, N (optional, default F)
@@ -72,7 +72,7 @@ class Api(base.BaseApi):
         x_footer_email_receipt: plain text, footer of the email receipt
         x_cust_id: merchant customer id, 20 chars
         x_customer_ip: customer ip address, 15 chars, (Useful for fraud detection)
-    
+
         x_ship_to_first_name: 50 chars
         x_ship_to_last_name: 50 chars
         x_ship_to_company: 50 chars
@@ -81,7 +81,7 @@ class Api(base.BaseApi):
         x_ship_to_state: 40 chars or 2 char state code
         x_ship_to_zip: 20 chars
         x_ship_to_country: 60 chars
-    
+
         x_tax: tax item name<|>tax description<|>tax amount
                 name of tax , describe tax     , digits with no $ sign
                x_amount includes this already
@@ -93,7 +93,7 @@ class Api(base.BaseApi):
                 x_amount includes this already
         x_tax_exempt: TRUE, FALSE, T, F, YES, NO, Y, N, 1, 0
         x_po_num: 25 chars, merchant assigned purchase order number
-    
+
         x_authenticator_indicator: only AUTH_CAPTURE or AUTH_ONLY when processed
                         through cardholder authentication program
         x_cardholder_authentication_value: only AUTH_CAPTURE or AUTH_ONLY when processed
@@ -115,13 +115,13 @@ class Api(base.BaseApi):
             2 - something
             1 - Null
             Null - Null
-        
+
     there are also custom fields that will be added to the transaction
     and can be passed to the transaction method using the keyword argument:
         extra_fields of type C{dict}
-        
+
         like:
-            
+
             result_dict = aim.transaction(
                 amount=10.00,
                 card_num=u"4111111111111111",
@@ -129,11 +129,11 @@ class Api(base.BaseApi):
                 extra_fields={u'color': u'blue',
                               u'comment': u'ring twice at the door'}
             )
-            
-        
+
+
     """
     responses = resp.aim_codes
-    
+
     def __init__(self, *args, **kwargs):
         super(Api, self).__init__(*args, **kwargs)
         if not self.is_test:
@@ -142,7 +142,7 @@ class Api(base.BaseApi):
             self.server = "test.authorize.net"
 
         self.path = "/gateway/transact.dll"
-        self.headers = {'Content-Type': 'x-www-url-encoded'}
+        self.headers = {'Content-Type': 'x-www-url-encoded; charset=utf-8'}
         self.required_arguments = {
             'x_login': self.login,
             'x_tran_key': self.key,
@@ -164,7 +164,8 @@ class Api(base.BaseApi):
                 # these are the items that are bought here.
                 field_name = "x_line_item"
                 for item in value:
-                    argslist.append((field_name, "<|>".join(unicode(item))))
+                    s_item = u"<|>".join(unicode(item))
+                    argslist.append((field_name, s_item.encode('utf-8')))
             else:
                 if field == "authentication_indicator" or \
                    field == "cardholder_authentication_value":
@@ -172,19 +173,20 @@ class Api(base.BaseApi):
                 field_name = "x_" + field
                 if isinstance(value, list):
                     value = u'<|>'.join(value)
-                
-                argslist.append((field_name, xml.convert(value)))
+
+                argslist.append((field_name, xml.utf8convert(value)))
 
         for args in [self.required_arguments, extra_fields]:
             for field, value in args.iteritems():
-                argslist.append((field, xml.convert(value)))
+                argslist.append((field, xml.utf8convert(value)))
+
         body = urllib.urlencode(argslist)
         return self.request(body)
 
     def parse_response(self, response):
         """
         Parse the response string.
-        
+
         @param response: The response string
         @type response: C{str}
         """
