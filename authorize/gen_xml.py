@@ -377,17 +377,25 @@ def transaction(**kw):
         x.customerProfileId(kw['customer_profile_id']),
         x.customerPaymentProfileId(kw['customer_payment_profile_id']),
         x.customerAddressId(kw.get('customer_address_id')),
-        x.order(
-            x.invoiceNumber(kw.get('invoice_number')),
-            x.description(kw.get('description')),
-            x.purchaseOrderNumber(kw.get('purchase_order_number'))
-        ),
-        x.taxExempt(kw.get('tax_exempt', False)),
-        x.recurringBilling(kw.get('recurring', False)),
-        x.cardCode(kw.get('ccv'))
     ]
-    
+
     ptype = kw.get('profile_type', AUTH_ONLY)
+    if ptype in (AUTH_ONLY, CAPTURE_ONLY, AUTH_CAPTURE, CREDIT):
+        content += [
+            x.order(
+                x.invoiceNumber(kw.get('invoice_number')),
+                x.description(kw.get('description')),
+                x.purchaseOrderNumber(kw.get('purchase_order_number'))
+            )
+        ]
+    if ptype in (AUTH_ONLY, CAPTURE_ONLY, AUTH_CAPTURE):
+        content += [
+            x.taxExempt(kw.get('tax_exempt', False)),
+            x.recurringBilling(kw.get('recurring', False)),
+            x.cardCode(kw.get('ccv'))
+        ]
+
+
     if ptype == AUTH_ONLY:
         profile_type = x.profileTransAuthOnly(
             *content
@@ -400,8 +408,22 @@ def transaction(**kw):
         profile_type = x.profileTransAuthCapture(
             *content
         )
+    elif ptype == PRIOR_AUTH_CAPTURE:
+        profile_type = x.profileTransPriorAuthCapture(
+            *(content + [x.transId(kw['trans_id'])])
+        )
+    # NOTE: It is possible to issue a refund without the customerProfileId and
+    # the customerPaymentProfileId being supplied. However, this is not
+    # currently supported, and requires sending the masked credit card number.
+    elif ptype == CREDIT:
+        profile_type = x.profileTransRefund(
+            *(content + [x.transId(kw['trans_id'])])
+        )
+    else:
+        raise Exception("Unsupported profile type: %r" % (ptype,))
+
     return x.transaction(profile_type)
-    
+
 def paymentProfiles(**kw):
     return x.paymentProfiles(
         x.customerType(kw.get('customer_type')), # optional: individual, business
