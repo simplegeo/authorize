@@ -7,14 +7,26 @@ class BaseApi(object):
     Base Api object.
     """
     responses = None
-    def __init__(self, login, key, is_test=False, do_raise=False, async=False):
+    def __init__(self, login, key, delimiter=u",", encapsulator=u"",
+                 is_test=False, do_raise=False, async=False):
         """
         @param login: login key given by authorize.net
         @type login: L{unicode}
-        
+
         @param key: transaction key given by authorize.net
         @type key: L{unicode}
-        
+
+        @param delimiter: The delimiter character you have set
+                            in your authorize.net account for
+                            direct response parsing
+        @type delimiter: C{str} of len() 1, defaults to ','
+
+        @param encapsulator: The encapsulator character for each
+                             field that you have set in your
+                             authorize.net account for direct
+                             response parsing
+        @type encapsulator: C{str} of len() <= 1, defaults to ''
+
         @param is_test: Use the test sandbox from authroize.net
         @type is_test: L{bool}
         """
@@ -29,6 +41,8 @@ class BaseApi(object):
         self.do_raise = do_raise
         self.async = async
         self.headers = {'Content-Type': 'text/xml'}
+        self.delimiter = delimiter
+        self.encapsulator = encapsulator
 
     def request(self, body):
         """
@@ -54,10 +68,11 @@ class BaseApi(object):
                               postdata=body,
                               headers=self.headers
             ).addCallback(self.parse_response)
-    
+
     def parse_response(self, response):
         """
         Parse the response from the web service, check also if we want
         to raise the error as opposed to return an error object.
         """
-        return xml.to_dict(response, self.responses, self.do_raise)
+        return xml.to_dict(response, self.responses, self.do_raise,
+                           self.delimiter, self.encapsulator)

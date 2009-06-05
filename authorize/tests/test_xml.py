@@ -37,7 +37,7 @@ class TestXML(TestCase):
                 assert_other(body)
         cim.Api.request = validateRequest
         self.cim = cim.Api(u'foo', u'bar', is_test=True)
-        
+
         self.arb_old = arb.Api.request
         arb.Api.request = lambda self, body: assertValid(body)
         self.arb = arb.Api(u"foo", u"bar", is_test=True)
@@ -62,6 +62,29 @@ class TestXML(TestCase):
             else:
                 assert resp.messages.message.code.text_ == u'I00001'
 
+    def test_parse_direct_response(self):
+        """
+        The direct response string returned by Authorize.net can be
+        quite interesting to parse. We verify that it is correctly
+        handled.
+        """
+        response = """\
+<?xml version="1.0" encoding="utf-8"?>
+<createCustomerProfileTransactionResponse xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+  <messages>
+    <resultCode>Ok</resultCode>
+    <message>
+      <code>I00001</code>
+      <text>Successful.</text>
+    </message>
+  </messages>
+  <directResponse>*1*;*1*;*1*;*This transaction has been approved.*;*000000*;*Y*;*2000000001*;*INV000001*;*description of transaction*;*10.95*;*CC*;*auth_capture*;*custId123*;*John*;*Doe*;**;*123 Main St., foo*;*Bellevue*;*WA*;*98004*;*USA*;*000-000-0000*;**;*mark@example.com*;*John*;*Doe*;**;*123 Main St.*;*Bellevue*;*WA*;*98004*;*USA*;*1.00*;*0.00*;*2.00*;*FALSE*;*PONUM000001*;*D18EB6B211FE0BBF556B271FDA6F92EE*;*M*;*buaaahahah , *;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;**;*wallers,*</directResponse>
+</createCustomerProfileTransactionResponse>"""
+        resp = x.to_dict(response, responses.cim_map, delimiter=u";", encapsulator=u"*")
+        assert resp.direct_response.code == u"1"
+        assert resp.direct_response.address == u"123 Main St., foo"
+        assert resp.direct_response.holder_verification == u"buaaahahah , "
+
     def test_parser_to_dict(self):
         """
         Test that the dict parser works as expected
@@ -77,8 +100,8 @@ class TestXML(TestCase):
         d = x.to_dict(xml, {})
         assert d.bar.text_ == u'baz'
         assert d.quz.wow.text_ == u'works!'
-        
-        
+
+
     def test_create_profile(self):
         """
         Test that the XML generated for create_profile is valid according
@@ -104,7 +127,7 @@ class TestXML(TestCase):
             )
         finally:
             del self.assert_other
-    
+
         self.cim.create_profile(
             card_number=u"42222222222",
             expiration_date=u"2010-04",
@@ -112,7 +135,7 @@ class TestXML(TestCase):
             ship_phone=u'415-415-4154',
             ship_first_name=u'valentino'
         )
-        
+
         payment_profiles = [
             dict(card_number=u"43333333333",
                  expiration_date=u"2010-04"),
@@ -121,7 +144,7 @@ class TestXML(TestCase):
                  routing_number=u"12345678",
                  account_number=u"1234567890")
         ]
-        
+
         def assert_other(message):
             assert 'John Doe' in message
             assert '43333333333' in message
@@ -159,7 +182,7 @@ class TestXML(TestCase):
             ship_phone=u'415-415-4154',
             ship_first_name=u'valentino'
         )
-    
+
     def test_create_profile_transaction(self):
         """
         Test that the XML generated for create_profile_transaction is
@@ -197,8 +220,8 @@ class TestXML(TestCase):
                 tax_exempt=True
             )
         except KeyError, e:
-            assert 'approval_code' in e.message # error was caused by
-                                                # this key missing
+            assert 'approval_code' in str(e) # error was caused by
+                                             # this key missing
             self.cim.create_profile_transaction(
                 profile_type=u"capture_only",
                 amount=12.34,
@@ -239,14 +262,14 @@ class TestXML(TestCase):
             customer_profile_id=u"123",
             customer_address_id=u"543"
         )
-    
+
     def test_get_profile(self):
         """
         Test that the XML generated for get_profile is valid
         according to the XMLSchema.
         """
         self.cim.get_profile(customer_profile_id=u"123")
-    
+
     def test_get_payment_profile(self):
         """
         Test that the XML generated for get_payment_profile is valid
@@ -256,7 +279,7 @@ class TestXML(TestCase):
             customer_profile_id=u"655",
             customer_payment_profile_id=u"999"
         )
-    
+
     def test_get_shipping_address(self):
         """
         Test that the XML generated for get_shipping_address is valid
@@ -266,7 +289,7 @@ class TestXML(TestCase):
             customer_profile_id=u"900",
             customer_address_id=u"344"
         )
-    
+
     def test_update_profile(self):
         """
         Test that the XML generated for update_profile is valid
@@ -290,7 +313,7 @@ class TestXML(TestCase):
             card_number=u"422222222222",
             expiration_date=u"2009-10"
         )
-        
+
     def test_update_shipping_address(self):
         """
         Test that the XML generated for update_shipping_address is valid
@@ -302,7 +325,7 @@ class TestXML(TestCase):
             first_name=u"pippo",
             phone=u"415-415-4154"
         )
-        
+
     def test_validate_payment_profile(self):
         """
         Test that the XML generated for validate_payment_profile is valid
@@ -357,7 +380,7 @@ class TestXML(TestCase):
             driver_state=u"CA",
             driver_birth=u"1990-09-09"
         )
-    
+
     def test_update_subscription(self):
         """
         Test that XML generated for arb subscription creation is valid
@@ -378,15 +401,18 @@ class TestXML(TestCase):
                     driver_state=u"CA",
                     driver_birth=u"1990-09-09"
         )
-        
+
         try:
             self.arb.update_subscription(**args)
         except KeyError:
             self.arb.update_subscription(subscription_id=u"1234", **args)
-    
+
     def test_cancel_subscription(self):
+        """
+        Cancel subscription is a generated correctly
+        """
         try:
             self.arb.cancel_subscription()
         except KeyError:
             self.arb.cancel_subscription(subscription_id=u"1234")
-        
+

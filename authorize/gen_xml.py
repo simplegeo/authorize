@@ -167,7 +167,7 @@ def parse_node(node):
             new[tag].append(child)
     return new
 
-def to_dict(s, error_codes, do_raise=True):
+def to_dict(s, error_codes, do_raise=True, delimiter=u',', encapsulator=u''):
     """
     Return a dict_accessor representation of the given string, if raise_
     is True an exception is raised when an error code is present.
@@ -183,8 +183,17 @@ def to_dict(s, error_codes, do_raise=True):
     if code in error_codes:
         if do_raise:
             raise error_codes[code]
+
+    dr = None
     if parsed.get('direct_response') is not None:
-        parsed.direct_response = parse_direct_response(parsed.direct_response.text_)
+        dr = parsed.direct_response.text_
+    elif parsed.get('validation_direct_response') is not None:
+        dr = parsed.validation_direct_response.text_
+
+    if dr is not None:
+        parsed.direct_response = parse_direct_response(dr,
+                                                       delimiter,
+                                                       encapsulator)
     return parsed
 
 
@@ -197,12 +206,12 @@ m = ['code', 'subcode', 'reason_code', 'reason_text', 'auth_code',
      'freight', 'tax_exempt', 'po_number', 'md5_hash', 'ccv',
      'holder_verification']
 
-def parse_direct_response(s):
+def parse_direct_response(s, delimiter=u',', encapsulator=u''):
     """
     Very simple format but made of many fields, the most complex ones
     have the following meanings:
 
-        code: 
+        code:
             see L{responses.aim_codes} for all the codes
 
         avs:
@@ -229,11 +238,26 @@ def parse_direct_response(s):
     if not isinstance(s, unicode):
         s = s.decode('utf-8', 'replace')
 
-    v = s.split(u',')
-    if not len(v) >= len(m):
-        v = s.split(u'|')
+    # being <e> the encapsulator and <d> the delimiter
+    # this is the format of the direct response:
+    # <e>field<e><d><e>field<e><d><e>field<e>
+    #
+    # Here's a regexp that would parse this:
+    #    "\<e>([^\<d>\<e>]*)\<e>\<d>?"
+    # But it has a problem when <e> is '' and I don't
+    # have the will to do the much harder one that actually
+    # does it well... So let's just split and strip.
+    e = encapsulator
+    d = delimiter
 
-    d = dict_accessor(dict(zip(m, v)))
+    v = s.split(e+d+e)
+    v[0] = v[0].lstrip(e)
+    v[-1] = v[-1].rstrip(e)
+
+    if not len(v) >= len(m):
+        d = dict_accessor({'error': "Couldn't parse the direct response"})
+    else:
+        d = dict_accessor(dict(zip(m, v)))
     d.original = s
     return d
 
