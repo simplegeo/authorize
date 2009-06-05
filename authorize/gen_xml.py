@@ -201,10 +201,10 @@ def parse_direct_response(s):
     """
     Very simple format but made of many fields, the most complex ones
     have the following meanings:
-    
+
         code: 
             see L{responses.aim_codes} for all the codes
-            
+
         avs:
             see L{responses.avs_codes} for all the codes
 
@@ -217,9 +217,9 @@ def parse_direct_response(s):
             CREDIT
             PRIOR_AUTH_CAPTURE
             VOID
-        
+
         tax_exempt: true, false, T, F, YES, NO, Y, N, 1, 0
-        
+
         ccv:
             see L{responses.ccv_codes} for all the codes
 
@@ -228,7 +228,7 @@ def parse_direct_response(s):
     """
     if not isinstance(s, unicode):
         s = s.decode('utf-8', 'replace')
-        
+
     v = s.split(u',')
     if not len(v) >= len(m):
         v = s.split(u'|')
@@ -263,7 +263,7 @@ def _address(pre='', kw={}, *extra):
         x.state(kw.get(pre+'state')), # optional
         x.zip(kw.get(pre+'zip')), # optional
         x.country(kw.get(pre+'country')) # optional
-        
+
     ] + list(extra)
 
 def address(pre='', **kw):
@@ -452,7 +452,7 @@ def profile(**kw):
         x.description(kw.get('description')),
         x.email(kw.get('email'))
     ]
-    
+
     payment_profiles = kw.get('payment_profiles', None)
     if payment_profiles is not None:
         content = content + list(
