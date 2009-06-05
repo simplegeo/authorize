@@ -1,4 +1,4 @@
-include README
+include *.txt
 include LICENSE
-recursive-include doc *
-recursive-include authorize *.txt
+include README
+include NEWS

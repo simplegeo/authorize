@@ -1,0 +1,9 @@
+0.0.8 - 2009-06-06
+-------------------------
+
+ - Fixes Issue #4: Unicode/UTF-8 Issues in encoding URL parameters
+ - Fixes Issue #5: Direct response parsing now fully supports
+                     delimiters and encapsulators customization
+ - Adds support for PRIOR_AUTH_CAPTURE and CREDIT to cim transactions
+ - Adds support for get_profile_ids API call to retrieve all users'
+                    profile ids.
