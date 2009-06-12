@@ -5,7 +5,7 @@ from authorize.util import request
 from authorize.gen_xml import INDIVIDUAL, BUSINESS, ECHECK_CCD, ECHECK_PPD, ECHECK_TEL, ECHECK_WEB
 from authorize.gen_xml import BANK, CREDIT_CARD, VALIDATION_NONE, CAPTURE_ONLY, AUTH_CAPTURE
 from authorize.gen_xml import VALIDATION_TEST, VALIDATION_LIVE, ACCOUNT_CHECKING, ACCOUNT_SAVINGS
-from authorize.gen_xml import ACCOUNT_BUSINESS_CHECKING, AUTH_ONLY
+from authorize.gen_xml import ACCOUNT_BUSINESS_CHECKING, AUTH_ONLY, CREDIT, PRIOR_AUTH_CAPTURE
 
 class Api(base.BaseApi):
     """
@@ -163,7 +163,7 @@ class Api(base.BaseApi):
                 amount: L{float} or L{decimal.Decimal}
                 customer_profile_id: L{unicode} or L{int}
                 customer_payment_profile_id: L{unicode} or L{int}
-                profile_type: L{AUTH_ONLY}, L{CAPTURE_ONLY}, L{AUTH_CAPTURE} (default AUTH_ONLY)
+                profile_type: L{AUTH_ONLY}, L{CAPTURE_ONLY}, L{AUTH_CAPTURE}, L{PRIOR_AUTH_CAPTURE}, L{CREDIT} (default AUTH_ONLY)
                 approval_code: L{unicode}, 6 chars authorization code of an original transaction (only for CAPTURE_ONLY)
 
             OPTIONAL:
