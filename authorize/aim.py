@@ -2,7 +2,7 @@ import urllib
 
 from authorize import gen_xml as xml, util, base, responses as resp
 
-from authorize.gen_xml import CREDIT_CARD, ECHECK
+from authorize.gen_xml import CREDIT_CARD, ECHECK, AuthorizeSystemError
 from authorize.gen_xml import AUTH_CAPTURE, AUTH_ONLY, CAPTURE_ONLY
 from authorize.gen_xml import CREDIT, PRIOR_AUTH_CAPTURE, VOID
 

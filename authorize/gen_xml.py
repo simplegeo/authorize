@@ -41,6 +41,20 @@ CREDIT = u"credit"
 PRIOR_AUTH_CAPTURE = u"prior_auth_capture"
 VOID = u"void"
 
+class AuthorizeSystemError(Exception):
+    """
+    I'm a serious kind of exception and I'm raised when something
+    went really bad at a lower level than the application level, like
+    when Authorize is down or when they return an unparseable response
+    """
+    def __init__(self, *args):
+        self.args = args
+    def __str__(self):
+        return "Exception: %s caused by %s" % self.args
+    def __repr__(self):
+        # Here we are printing a tuple, the , at the end is _required_
+        return "AuthorizeSystemFailure%s" % (self.args,)
+
 c = re.compile(r'([A-Z]+[a-z_]+)')
 
 def convert(arg):
@@ -172,7 +186,11 @@ def to_dict(s, error_codes, do_raise=True, delimiter=u',', encapsulator=u''):
     Return a dict_accessor representation of the given string, if raise_
     is True an exception is raised when an error code is present.
     """
-    t = fromstring(s)
+    try:
+        t = fromstring(s)
+    except SyntaxError, e:
+        raise AuthorizeSystemError(e, s)
+
     parsed = dict_accessor(parse_node(t)) # discard the root node which is useless
     try:
         if isinstance(parsed.messages.message, list): # there's more than a child

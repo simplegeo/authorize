@@ -1,5 +1,5 @@
 from authorize import gen_xml as xml, util, base, responses as resp
-from authorize.gen_xml import x
+from authorize.gen_xml import x, AuthorizeSystemError
 from authorize.util import request
 
 from authorize.gen_xml import INDIVIDUAL, BUSINESS, ECHECK_CCD, ECHECK_PPD, ECHECK_TEL, ECHECK_WEB
