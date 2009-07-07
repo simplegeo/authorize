@@ -190,7 +190,7 @@ class Api(base.BaseApi):
         @param response: The response string
         @type response: C{str}
         """
-        dict_response =  xml.parse_direct_response(response)
+        dict_response =  xml.parse_direct_response(response, self.delimiter, self.encapsulator)
         if dict_response.code != u"1":
             if self.do_raise:
                 raise resp.AuthorizeError(dict_response.code,
