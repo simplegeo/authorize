@@ -345,6 +345,10 @@ def billTo(**kw):
     )
 
 def arbBillTo(**kw):
+    # This is just to be sure that they were passed.
+    # as the spec requires
+    kw['bill_first_name']
+    kw['bill_last_name']
     return x.billTo(
         *_address('bill_', kw)
     )

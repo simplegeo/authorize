@@ -84,12 +84,12 @@ class Api(base.BaseApi):
                     OPTIONAL:
                         customer_type: L{INDIVIDUAL} or L{BUSINESS}
                         bill_first_name:
-                        bill_last_name: 
-                        bill_company: 
-                        bill_address: 
-                        bill_city: 
-                        bill_state: 
-                        bill_zip: 
+                        bill_last_name:
+                        bill_company:
+                        bill_address:
+                        bill_city:
+                        bill_state:
+                        bill_zip:
                         bill_country:
                         bill_phone:
                         bill_fax:
@@ -98,7 +98,7 @@ class Api(base.BaseApi):
                     a single payment profile.
 
                 description:
-                email:                    
+                email:
                 account_type: L{ACCOUNT_CHECKING} or L{ACCOUNT_SAVINGS}
                         or L{ACCOUNT_BUSINESS_CHECKING}, only with BANK
                 bank_name:

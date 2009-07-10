@@ -10,26 +10,26 @@ from authorize.gen_xml import ACCOUNT_BUSINESS_CHECKING
 class Api(base.BaseApi):
     """
     Main ARB api object.
-    
+
     Each api call will return a response dictionary in formats similar
     to:
-    
+
     {'messages': {'message': {'code': {'text_': u'I00001'},
                               'text': {'text_': u'Successful.'}},
                   'result_code': {'text_': u'Ok'}}}
-    
+
     with all the possible variations and arguments depending on the
     format specified by Authorize.net at:
-    
+
         http://www.authorize.net/support/ARB_guide.pdf
-    
+
     a field in the response can be accesses by using either dictionary
     access methods:
-        
+
         response['messages']['message']['code']['text_']
-    
+
     or object dot-notation:
-    
+
         response.messages.message.code.text_
     """
     responses = resp.arb_map
@@ -51,6 +51,9 @@ class Api(base.BaseApi):
                 routing_number: 9 digits, required with BANK
                 account_number: 5 to 17 digits, required with BANK
                 name_on_account: required with BANK
+                bill_first_name
+                bill_last_name
+
 
             OPTIONAL or CONDITIONAL:
                 subscription_name: unique name for the subscription
@@ -74,8 +77,9 @@ class Api(base.BaseApi):
                 bank_name:
                 echeck_type: L{ECHECK_CCD} or L{ECHECK_TEL} or
                     L{ECHECK_PPD} or L{ECHECK_WEB}, only with BANK
-                bill_first_name, ship_first_name:
-                bill_last_name, ship_last_name:
+
+                ship_first_name:
+                ship_last_name:
                 bill_company, ship_company:
                 bill_address, ship_address:
                 bill_city, ship_city:
@@ -86,7 +90,7 @@ class Api(base.BaseApi):
                 ship_fax:
         """
         return 'ARBCreateSubscriptionRequest', kw, xml.subscription(**kw)
-    
+
     @request
     def update_subscription(**kw):
         """
@@ -99,7 +103,7 @@ class Api(base.BaseApi):
             x.subscriptionId(kw['subscription_id']),
             xml.subscription(**kw)
         )
-    
+
     @request
     def cancel_subscription(**kw):
         """
