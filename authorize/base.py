@@ -8,7 +8,7 @@ class BaseApi(object):
     """
     responses = None
     def __init__(self, login, key, delimiter=u",", encapsulator=u"",
-                 is_test=False, do_raise=False, async=False):
+                 is_test=False, do_raise=False, async=False, uniform=False):
         """
         @param login: login key given by authorize.net
         @type login: L{unicode}
@@ -27,6 +27,11 @@ class BaseApi(object):
                              response parsing
         @type encapsulator: C{str} of len() <= 1, defaults to ''
 
+        @param uniform: Tell the library to use a uniform return
+                        type for direct_response.messages that will
+                        always be a list even with a single message.
+        @type uniform: C{boolean},C{False} by default
+
         @param is_test: Use the test sandbox from authroize.net
         @type is_test: L{bool}
         """
@@ -43,6 +48,7 @@ class BaseApi(object):
         self.headers = {'Content-Type': 'text/xml'}
         self.delimiter = delimiter
         self.encapsulator = encapsulator
+        self.uniform = uniform
 
     def request(self, body):
         """
@@ -75,4 +81,4 @@ class BaseApi(object):
         to raise the error as opposed to return an error object.
         """
         return xml.to_dict(response, self.responses, self.do_raise,
-                           self.delimiter, self.encapsulator)
+                           self.delimiter, self.encapsulator, self.uniform)

@@ -350,7 +350,9 @@ class TestXML(TestCase):
                 start_date=u"2008-09-09",
                 amount=39.99,
                 card_number=u"4222222222222",
-                expiration_date=u"2009-10"
+                expiration_date=u"2009-10",
+                bill_first_name=u"Michael",
+                bill_last_name=u"Pool"
             )
         except KeyError:
             pass
@@ -362,7 +364,9 @@ class TestXML(TestCase):
             start_date=u"2008-09-09",
             amount=39.99,
             card_number=u"4222222222222",
-            expiration_date=u"2009-10"
+            expiration_date=u"2009-10",
+            bill_first_name=u"Michael",
+            bill_last_name=u"Pool"
         )
         self.arb.create_subscription(
             trial_amount=5.00,
@@ -376,6 +380,7 @@ class TestXML(TestCase):
             ship_first_name=u"valentino",
             first_name=u"valentino",
             bill_first_name=u"valentino",
+            bill_last_name=u"Pool",
             driver_number=u"55555",
             driver_state=u"CA",
             driver_birth=u"1990-09-09"
@@ -397,6 +402,7 @@ class TestXML(TestCase):
                     ship_first_name=u"valentino",
                     first_name=u"valentino",
                     bill_first_name=u"valentino",
+                    bill_last_name=u"pool",
                     driver_number=u"55555",
                     driver_state=u"CA",
                     driver_birth=u"1990-09-09"

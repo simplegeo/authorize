@@ -181,7 +181,7 @@ def parse_node(node):
             new[tag].append(child)
     return new
 
-def to_dict(s, error_codes, do_raise=True, delimiter=u',', encapsulator=u''):
+def to_dict(s, error_codes, do_raise=True, delimiter=u',', encapsulator=u'', uniform=False):
     """
     Return a dict_accessor representation of the given string, if raise_
     is True an exception is raised when an error code is present.
@@ -196,6 +196,8 @@ def to_dict(s, error_codes, do_raise=True, delimiter=u',', encapsulator=u''):
         if isinstance(parsed.messages.message, list): # there's more than a child
             return parsed
         code = parsed.messages.message.code.text_
+        if uniform:
+            parsed.messages.message = [parsed.messages.message]
     except KeyError:
         return parsed
     if code in error_codes:
