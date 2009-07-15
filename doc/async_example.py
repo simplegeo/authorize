@@ -6,7 +6,11 @@ from twisted.internet import reactor, defer
 
 @defer.inlineCallbacks
 def run():
-    cim_api = cim.Api(u'LOGIN', u'TRANS_KEY', is_test=True, async=True)
+    # Note that you need to specify a delimiter and an encapsulator
+    # for your account (either in your account dashboard or through
+    # the constructor of any of the API objects
+    cim_api = cim.Api(u'LOGIN', u'TRANS_KEY', is_test=True, async=True,
+                      delimiter=u",", encapsulator=u"")
 
     # We create a profile for one of our users.
     tree = yield cim_api.create_profile(card_number=u"4111111111111111",
@@ -14,7 +18,7 @@ def run():
                                         customer_id=u"testaccount5")
 
     pprint(tree)
-    
+
     # Store the profile id somewhere so that we can later retrieve it.
     # CIM doesn't have a listing or search functionality so you'll
     # have to keep this somewhere safe and associated with the user.
@@ -23,7 +27,7 @@ def run():
     # Retrieve again the profile we just created using the profile_id
     resp = yield cim_api.get_profile(customer_profile_id=profile_id)
     pprint(resp)
-    
+
     # And let's now try to create a transaction on that profile.
     resp = yield cim_api.create_profile_transaction(
         customer_profile_id=profile_id,
@@ -36,6 +40,6 @@ def run():
     resp = yield cim_api.delete_profile(customer_profile_id=profile_id)
     pprint(resp)
     reactor.stop()
-    
+
 reactor.callLater(0, run)
 reactor.run()

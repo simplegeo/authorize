@@ -5,6 +5,13 @@ from authorize import gen_xml as xml
 class BaseApi(object):
     """
     Base Api object.
+
+    NOTE:
+    It's important that you make sure that your Authorize dashboard
+    uses the same delimiter and encapsulator that you are using in
+    your API objects. If you don't check this it could happen that the
+    direct_response cannot be parsed even in those cases where it's
+    absolutely necessary, like in the AIM API.
     """
     responses = None
     def __init__(self, login, key, delimiter=u",", encapsulator=u"",

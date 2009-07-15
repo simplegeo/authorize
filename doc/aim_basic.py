@@ -5,7 +5,10 @@ LOGIN = u"LOGIN"
 KEY = u"TRAN_KEY"
 
 # Setup the aim Api object.
-aim = aim_api.Api(LOGIN, KEY, is_test=True)
+# Note that you need to specify a delimiter and an encapsulator
+# for your account (either in your account dashboard or through
+# the constructor of any of the API objects
+aim = aim_api.Api(LOGIN, KEY, is_test=True, delimiter=u",", encapsulator=u"")
 
 # Create a transaction against a credit card
 result_dict = aim.transaction(

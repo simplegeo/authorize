@@ -1,4 +1,4 @@
-0.0.9 - 2009-07-XX
+0.0.9 - 2009-07-15
 -------------------------
 
  - Fixes Issue #6: AIM API didn't pass the delimiter and encapsulator
@@ -6,6 +6,13 @@
  - Introduced a new AuthorizeSystemError that will be used for
    critical failures at system level rather than at application level
    like failed transactions.
+ - Added more documentation about delimiter and encapsulator to
+   examples and docstrings.
+ - arb API required bill_first_name and bill_last_name arguments but
+   this wasn't reflected in the documentation and in code. Issue #8
+ - Introduced new "uniform" keyword argument for the API objects that
+   always returns a list even when in the response body there is a
+   single response message. Fixes Issue #7.
 
 0.0.8 - 2009-06-06
 -------------------------

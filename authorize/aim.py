@@ -22,6 +22,12 @@ class Api(base.BaseApi):
 
     Every string argument must be unicode.
 
+    NOTE:
+    It's important that you make sure that your Authorize dashboard
+    uses the same delimiter and encapsulator that you are using in
+    your API objects. If you don't check this it could happen that the
+    direct_response cannot be parsed even in those cases where it's
+    absolutely necessary, like in the AIM API.
 
     Minimum required arguments for a transaction:
         x_login: up to 20 chars

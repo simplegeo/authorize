@@ -60,6 +60,13 @@ class Api(base.BaseApi):
 
     In the example customer_profile_id would be {'text_': u'12334'} but
     the api_call will extract the text_ content for you.
+
+    NOTE:
+    It's important that you make sure that your Authorize dashboard
+    uses the same delimiter and encapsulator that you are using in
+    your API objects. If you don't check this it could happen that the
+    direct_response cannot be parsed even in those cases where it's
+    absolutely necessary, like in the AIM API.
     """
     responses = resp.cim_map
 

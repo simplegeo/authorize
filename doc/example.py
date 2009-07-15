@@ -2,7 +2,11 @@ from authorize import cim
 
 from pprint import pprint
 
-cim_api = cim.Api(u'LOGIN', u'TRANS_KEY', is_test=True)
+# Note that you need to specify a delimiter and an encapsulator
+# for your account (either in your account dashboard or through
+# the constructor of any of the API objects
+cim_api = cim.Api(u'LOGIN', u'TRANS_KEY', is_test=True,
+                  delimiter=u",", encapsulator=u"")
 
 # We create a profile for one of our users.
 tree = cim_api.create_profile(
