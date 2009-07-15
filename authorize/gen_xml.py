@@ -53,7 +53,7 @@ class AuthorizeSystemError(Exception):
         return "Exception: %s caused by %s" % self.args
     def __repr__(self):
         # Here we are printing a tuple, the , at the end is _required_
-        return "AuthorizeSystemFailure%s" % (self.args,)
+        return "AuthorizeSystemError%s" % (self.args,)
 
 c = re.compile(r'([A-Z]+[a-z_]+)')
 
