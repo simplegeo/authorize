@@ -523,14 +523,14 @@ def subscription(**kw):
         x.name(kw.get('subscription_name')),
         x.paymentSchedule(
             x.interval(
-                x.length(kw['interval_length']), # up to 3 digits, 1-12 for months, 7-365 days
-                x.unit(kw['interval_unit']) # days or months
+                x.length(kw.get('interval_length')), # up to 3 digits, 1-12 for months, 7-365 days
+                x.unit(kw.get('interval_unit')) # days or months
             ),
-            x.startDate(kw['start_date']), # YYYY-MM-DD
+            x.startDate(kw.get('start_date')), # YYYY-MM-DD
             x.totalOccurrences(kw.get('total_occurrences', 9999)),
             x.trialOccurrences(trial_occurrences)
         ),
-        x.amount(kw['amount']),
+        x.amount(kw.get('amount')),
         x.trialAmount(trial_amount),
         payment(**kw),
         x.order(
