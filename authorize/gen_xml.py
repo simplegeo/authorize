@@ -467,6 +467,10 @@ def transaction(**kw):
         profile_type = x.profileTransRefund(
             *(content + [x.transId(kw['trans_id'])])
         )
+    elif ptype == VOID:
+        profile_type = x.profileTransVoid(
+            *(content + [x.transId(kw['trans_id'])])
+        )
     else:
         raise Exception("Unsupported profile type: %r" % (ptype,))
 
