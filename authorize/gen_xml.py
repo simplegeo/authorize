@@ -502,7 +502,7 @@ def profile(**kw):
     content = [
         x.merchantCustomerId(kw['customer_id']),
         x.description(kw.get('description')),
-        x.email(kw.get('email'))
+        x.email(kw.get('email')),
     ]
 
     payment_profiles = kw.get('payment_profiles', None)
