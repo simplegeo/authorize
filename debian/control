@@ -1,0 +1,13 @@
+Source: authorize
+Section: python
+Priority: extra
+Maintainer: Casey Crites <casey@simplegeo.com>
+Build-Depends: cdbs, debhelper (>= 7), python, python-support, python-setuptools, python-coverage, python-lxml (>= 2.0.0)
+Standards-Version: 3.8.4
+Homepage: http://bitbucket.org/adroll/authorize/
+
+Package: python-authorize
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Python library for interacting with authorize.net
+

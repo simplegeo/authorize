@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+ARTIFACTS ?= .
+DEB_PYTHON_SYSTEM=pysupport
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
+
+
+# Add here any variable or target overrides you need.
+
+install/python-authorize::
+	python-coverage run --source=. setup.py test
+	python-coverage xml --include="*.py" -o $(ARTIFACTS)/coverage.xml
+	python-coverage html --include="*.py" -d $(ARTIFACTS)/htmlcov
