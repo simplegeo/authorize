@@ -9,5 +9,8 @@ Homepage: http://bitbucket.org/adroll/authorize/
 Package: python-authorize
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Python library for interacting with authorize.net
-
+Description: Authorize is a client side library to use CIM and 
+ ARB APIs exposed by Authorize.net payment services, it also 
+ provides two ways to use the API, a synchronous one that 
+ uses python's own httplib and an asynchronous one that 
+ uses Twisted Web instead.
