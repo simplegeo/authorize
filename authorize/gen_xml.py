@@ -377,7 +377,8 @@ def payment(**kw):
         return x.payment(
             x.creditCard(
                 x.cardNumber(kw['card_number']),
-                x.expirationDate(kw['expiration_date']) # YYYY-MM
+                x.expirationDate(kw['expiration_date']), # YYYY-MM
+                x.cardCode(kw['csc'])
             )
         )
     elif profile_type == BANK:
