@@ -1,3 +1,13 @@
+authorize (0.1.1a1-1sg4) maverick; urgency=low
+
+  [ Casey W Crites ]
+  * Either email, customer_id or description must be provided. This
+    commit makes it that way, instead of always requiring customer_id
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Thu, 01 Sep 2011 20:56:59 +0000
+
 authorize (0.1.1a1-1sg3) maverick; urgency=low
 
   [ Casey W Crites ]
