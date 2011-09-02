@@ -500,12 +500,8 @@ def paymentProfile(**kw):
     )
 
 def profile(**kw):
-    if (not kw.get('customer_id') and not kw.get('description') 
-            and not kw.get('email')):
-        raise Exception('Either customer_id, description or email is required.')
-        
     content = [
-        x.merchantCustomerId(kw.get('customer_id')),
+        x.merchantCustomerId(kw['customer_id']),
         x.description(kw.get('description')),
         x.email(kw.get('email')),
     ]
